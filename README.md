@@ -1,2 +1,2 @@
-# IRG-Labos
+# IRG-Lab
 Laboratory assignments
