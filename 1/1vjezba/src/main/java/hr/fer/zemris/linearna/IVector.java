@@ -1,7 +1,7 @@
 package hr.fer.zemris.linearna;
 
 /**
- * Provides some generic methods for vectors.
+ * Provides some generic methods for working with vectors.
  */
 public interface IVector {
 
@@ -18,7 +18,8 @@ public interface IVector {
      * @param index position.
      * @param value value.
      * @return modified vector.
-     * @throws IllegalArgumentException if provided <i>index</i> is out of bounds.
+     * @throws IllegalArgumentException if provided <i>index</i> is out of bounds or vector is
+     *                                  read-only.
      */
     IVector set(int index, double value);
 
@@ -35,8 +36,8 @@ public interface IVector {
     IVector copy();
 
     /**
-     * Copies <i>n</i> number of components from <b>this</b> vector. If <i>n</i> is higher than
-     * vector's dimension, then last <i>n-dimension</i> elements will be set to 0.
+     * Copies <i>n</i> number of components from <b>this</b> vector. If <i>n</i> is higher than vector's
+     * dimension, then last <i>n-dimension</i> elements will be set to 0.
      *
      * @param n number of components.
      * @return copied vector.
@@ -58,6 +59,8 @@ public interface IVector {
      *
      * @param other vector.
      * @return modified <b>this</b> vector.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     IVector add(IVector other);
 
@@ -66,6 +69,8 @@ public interface IVector {
      *
      * @param other vector.
      * @return new vector as a result.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     IVector nAdd(IVector other);
 
@@ -74,6 +79,8 @@ public interface IVector {
      *
      * @param other vector.
      * @return modified <b>this</b> vector.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     IVector sub(IVector other);
 
@@ -82,11 +89,13 @@ public interface IVector {
      *
      * @param other vector.
      * @return new vector as a result.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     IVector nSub(IVector other);
 
     /**
-     * Performs scalar multiplication of <b>this</b> vector with provided <i>scalar</i>.
+     * Performs scalar multiplication of <b>this</b> vector by provided <i>scalar</i>.
      *
      * @param scalar scalar.
      * @return modified <b>this</b> vector.
@@ -94,7 +103,7 @@ public interface IVector {
     IVector scalarMultiply(double scalar);
 
     /**
-     * Performs scalar multiplication of <b>this</b> vector with provided <i>scalar</i>.
+     * Performs scalar multiplication of <b>this</b> vector by provided <i>scalar</i>.
      *
      * @param scalar scalar.
      * @return new vector as a result.
@@ -125,6 +134,8 @@ public interface IVector {
      *
      * @param other vector.
      * @return cosinus angle.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     double cosine(IVector other);
 
@@ -133,6 +144,8 @@ public interface IVector {
      *
      * @param other vector.
      * @return scalar product.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector.
      */
     double scalarProduct(IVector other);
 
@@ -141,14 +154,37 @@ public interface IVector {
      *
      * @param other vector.
      * @return new vector as a result.
+     * @throws IllegalArgumentException if <i>other</i> vector has not the same dimension as <b>this</b>
+     *                                  vector and if dimension is not equal to 3.
      */
     IVector nVectorProduct(IVector other);
 
+    /**
+     * Creates a new vector from homogeneous space into real space. If a vector from homogeneous space is
+     * a d-dimensional vector, then its vector from a real space will be (d-1)-dimensional vector whose
+     * components will be divided by d.th component.
+     *
+     * @return new vector as a result.
+     */
     IVector nFromHomogeneous();
 
     /**
      * @return <b>this</b> vector as an array of doubles.
      */
     double[] toArray();
+
+    /**
+     * Performs {@link #scalarMultiply(double)} method with -1 as an argument.
+     *
+     * @return modified <b>this</b> vector.
+     */
+    IVector inverse();
+
+    /**
+     * Performs {@link #scalarMultiply(double)} method with -1 as an argument.
+     *
+     * @return new vector as a result.
+     */
+    IVector nInverse();
 
 }
