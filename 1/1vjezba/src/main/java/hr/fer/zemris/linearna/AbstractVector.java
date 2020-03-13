@@ -164,11 +164,11 @@ public abstract class AbstractVector implements IVector {
         return toString(3);
     }
 
-    private String toString(int dimension) {
+    private String toString(int decimals) {
         StringJoiner sj = new StringJoiner(", ");
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
         otherSymbols.setDecimalSeparator('.');
-        DecimalFormat format = new DecimalFormat("0.0##", otherSymbols);
+        DecimalFormat format = new DecimalFormat("0.0" + "#".repeat(decimals - 1), otherSymbols);
         for (int i = 0; i < this.getDimension(); i++) {
             sj.add(format.format(this.get(i)));
         }

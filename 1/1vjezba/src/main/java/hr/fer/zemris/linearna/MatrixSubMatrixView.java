@@ -1,0 +1,63 @@
+package hr.fer.zemris.linearna;
+
+public class MatrixSubMatrixView extends AbstractMatrix {
+
+    private IMatrix realMatrix;
+    private int[] rowIndexes;
+    private int[] colIndexes;
+
+    public MatrixSubMatrixView(IMatrix realMatrix, int row, int column) {
+        this(
+                realMatrix,
+                filterIndexes(row, realMatrix.getRowsCount()),
+                filterIndexes(column, realMatrix.getColsCount())
+        );
+    }
+
+    private static int[] filterIndexes(int index, int max) {
+        int[] result = new int[max - 1];
+        for (int i = 0; i < result.length; i++) {
+            if (i != index) result[i] = i;
+        }
+        return result;
+    }
+
+    private MatrixSubMatrixView(IMatrix realMatrix, int[] rowIndexes, int[] colIndexes) {
+        this.realMatrix = realMatrix;
+        this.rowIndexes = rowIndexes;
+        this.colIndexes = colIndexes;
+    }
+
+
+    @Override
+    public int getRowsCount() {
+        return rowIndexes.length;
+    }
+
+    @Override
+    public int getColsCount() {
+        return colIndexes.length;
+    }
+
+    @Override
+    public double get(int row, int column) {
+        return realMatrix.get(row, column);
+    }
+
+    @Override
+    public IMatrix set(int row, int column, double value) {
+        return realMatrix.set(row, column, value);
+    }
+
+    @Override
+    public IMatrix copy() {
+        IMatrix result = this.newInstance(getRowsCount(), getColsCount());
+        return new MatrixSubMatrixView(realMatrix, rowIndexes, colIndexes);
+    }
+
+    @Override
+    public IMatrix newInstance(int rows, int columns) {
+
+        return null;
+    }
+}
