@@ -70,6 +70,7 @@ public abstract class AbstractMatrix implements IMatrix {
 
     @Override
     public IMatrix subMatrix(int row, int column, boolean liveView) {
+        if (liveView) return new MatrixSubMatrixView(this, row, column);
         return null;
     }
 
@@ -102,4 +103,5 @@ public abstract class AbstractMatrix implements IMatrix {
         }
         return result.toString();
     }
+
 }

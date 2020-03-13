@@ -16,8 +16,8 @@ public class MatrixSubMatrixView extends AbstractMatrix {
 
     private static int[] filterIndexes(int index, int max) {
         int[] result = new int[max - 1];
-        for (int i = 0; i < result.length; i++) {
-            if (i != index) result[i] = i;
+        for (int i = 0, j = 0; i < max; i++) {
+            if (i != index) result[j++] = i;
         }
         return result;
     }
@@ -41,12 +41,12 @@ public class MatrixSubMatrixView extends AbstractMatrix {
 
     @Override
     public double get(int row, int column) {
-        return realMatrix.get(row, column);
+        return realMatrix.get(rowIndexes[row], colIndexes[column]);
     }
 
     @Override
     public IMatrix set(int row, int column, double value) {
-        return realMatrix.set(row, column, value);
+        return realMatrix.set(rowIndexes[row], colIndexes[column], value);
     }
 
     @Override
