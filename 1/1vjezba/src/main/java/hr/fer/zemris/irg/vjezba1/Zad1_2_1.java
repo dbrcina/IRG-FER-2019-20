@@ -3,7 +3,7 @@ package hr.fer.zemris.irg.vjezba1;
 import hr.fer.zemris.linearna.IVector;
 import hr.fer.zemris.linearna.Vector;
 
-public class BarycentricCoordinates1 {
+public class Zad1_2_1 {
 
     public static void main(String[] args) {
         IVector a = Vector.parseSimple("1 0 0");

@@ -28,7 +28,6 @@ public class MatrixSubMatrixView extends AbstractMatrix {
         this.colIndexes = colIndexes;
     }
 
-
     @Override
     public int getRowsCount() {
         return rowIndexes.length;
@@ -51,13 +50,13 @@ public class MatrixSubMatrixView extends AbstractMatrix {
 
     @Override
     public IMatrix copy() {
-        IMatrix result = this.newInstance(getRowsCount(), getColsCount());
         return new MatrixSubMatrixView(realMatrix, rowIndexes, colIndexes);
     }
 
     @Override
     public IMatrix newInstance(int rows, int columns) {
-
-        return null;
+        IMatrix m = realMatrix.newInstance(rows + 1, columns + 1);
+        return m.subMatrix(0, 0, true);
     }
+
 }

@@ -32,6 +32,12 @@ public interface IMatrix {
 
     IMatrix nInvert();
 
+    IMatrix scalarMultiply(double scalar);
+
+    IMatrix nScalarMultiply(double scalar);
+
     double[][] toArray();
+
+    IVector toVector(boolean liveView);
 
 }

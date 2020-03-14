@@ -160,19 +160,36 @@ public abstract class AbstractVector implements IVector {
     }
 
     @Override
+    public IMatrix toRowMatrix(boolean liveView) {
+        if (liveView) return new MatrixVectorView(this, true);
+        double[][] elements = new double[][]{toArray()};
+        return new Matrix(1, getDimension(), elements, false);
+    }
+
+    @Override
+    public IMatrix toColumnMatrix(boolean liveView) {
+        if (liveView) return new MatrixVectorView(this, false);
+        double[][] elements = new double[getDimension()][1];
+        for (int i = 0; i < getDimension(); i++) {
+            elements[i][0] = get(i);
+        }
+        return new Matrix(getDimension(), 1, elements, false);
+    }
+
+    @Override
     public String toString() {
         return toString(3);
     }
 
     private String toString(int decimals) {
-        StringJoiner sj = new StringJoiner(", ");
+        StringJoiner sj = new StringJoiner(", ", "(", ")");
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
         otherSymbols.setDecimalSeparator('.');
         DecimalFormat format = new DecimalFormat("0.0" + "#".repeat(decimals - 1), otherSymbols);
         for (int i = 0; i < this.getDimension(); i++) {
-            sj.add(format.format(this.get(i)));
+            sj.add(format.format(get(i)));
         }
-        return "(" + sj.toString() + ")";
+        return sj.toString();
     }
 
 }

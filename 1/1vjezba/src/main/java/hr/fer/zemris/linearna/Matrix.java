@@ -57,10 +57,11 @@ public class Matrix extends AbstractMatrix {
         List<double[]> elements = new ArrayList<>();
         String[] rows = s.trim().split("\\|");
         for (String row : rows) {
-            elements.add(Arrays.stream(row.trim().split("\\s+")).mapToDouble(Double::parseDouble).toArray());
+            elements.add(Arrays.stream(row.trim().split("\\s+"))
+                    .mapToDouble(Double::parseDouble)
+                    .toArray()
+            );
         }
-        int r = elements.size();
-        int c = elements.get(0).length;
         return new Matrix(
                 elements.size(),
                 elements.get(0).length,

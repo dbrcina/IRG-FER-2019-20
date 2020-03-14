@@ -187,4 +187,8 @@ public interface IVector {
      */
     IVector nInverse();
 
+    IMatrix toRowMatrix(boolean liveView);
+
+    IMatrix toColumnMatrix(boolean liveView);
+
 }

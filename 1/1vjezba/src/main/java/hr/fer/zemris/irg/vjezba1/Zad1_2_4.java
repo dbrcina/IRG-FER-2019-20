@@ -5,7 +5,7 @@ import hr.fer.zemris.linearna.Vector;
 
 import java.util.Scanner;
 
-public class ReflectVectorDemo {
+public class Zad1_2_4 {
 
     public static void main(String[] args) {
         try (Scanner sc = new Scanner(System.in)) {
