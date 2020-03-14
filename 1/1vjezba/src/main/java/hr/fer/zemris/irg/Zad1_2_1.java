@@ -1,4 +1,4 @@
-package hr.fer.zemris.irg.vjezba1;
+package hr.fer.zemris.irg;
 
 import hr.fer.zemris.linearna.IVector;
 import hr.fer.zemris.linearna.Vector;
