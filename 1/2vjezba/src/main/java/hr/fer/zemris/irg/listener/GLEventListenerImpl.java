@@ -49,10 +49,10 @@ public class GLEventListenerImpl implements GLEventListener {
         Color color = model.getCurrentColor();
         gl2.glColor3f(color.getRed() / 255, color.getGreen() / 255, color.getBlue() / 255);
         gl2.glBegin(GL2.GL_QUADS);
-        gl2.glVertex2f(surfaceWidth - quadDimension, surfaceHeight);
-        gl2.glVertex2f(surfaceWidth - quadDimension, surfaceHeight - quadDimension);
-        gl2.glVertex2f(surfaceWidth, surfaceHeight - quadDimension);
-        gl2.glVertex2f(surfaceWidth, surfaceHeight);
+        gl2.glVertex2f(surfaceWidth - quadDimension, quadDimension);
+        gl2.glVertex2f(surfaceWidth - quadDimension, 0);
+        gl2.glVertex2f(surfaceWidth, 0);
+        gl2.glVertex2f(surfaceWidth, quadDimension);
         gl2.glEnd();
     }
 
@@ -105,7 +105,7 @@ public class GLEventListenerImpl implements GLEventListener {
         // coordinate system origin at lower left with width and
         // height same as the window
         GLU glu = new GLU();
-        glu.gluOrtho2D(0.0f, width, 0.0f, height);
+        glu.gluOrtho2D(0.0f, width, height, 0.0f);
 
         gl2.glMatrixMode(GL2.GL_MODELVIEW);
         gl2.glLoadIdentity();
