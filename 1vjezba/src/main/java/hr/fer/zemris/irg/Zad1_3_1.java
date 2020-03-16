@@ -19,7 +19,7 @@ public class Zad1_3_1 {
         System.out.println("\033[1mv2\033[0m = " + "\033[1mv1\033[0m x " + c + " = " + v2);
         IVector v3 = v2.nNormalize();
         System.out.println("\033[1mv3\033[0m = normalize(" + "\033[1mv2\033[0m) = " + v3);
-        IVector v4 = v2.nInverse();
+        IVector v4 = v2.nInvert();
         System.out.println("\033[1mv4\033[0m = -" + "\033[1mv2\033[0m = " + v4);
         System.out.println();
 
