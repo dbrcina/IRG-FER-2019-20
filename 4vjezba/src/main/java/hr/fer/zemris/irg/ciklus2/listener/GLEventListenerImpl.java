@@ -49,12 +49,7 @@ public class GLEventListenerImpl implements GLEventListener {
 
         List<IPolyElem> polyElems = model.getPolyElems();
         if (polyElems.isEmpty()) return;
-        if (model.isStateDrawPolygon()) drawPolygonState(gl2, polyElems);
-    }
-
-    private void drawPolygonState(GL2 gl2, List<IPolyElem> polyElems) {
         if (model.isFill()) {
-            PolygonUtil.calculateCoeffConvex(polyElems);
             PolygonUtil.fillConvex(gl2, polyElems);
         } else {
             PolygonUtil.drawConvex(gl2, polyElems);

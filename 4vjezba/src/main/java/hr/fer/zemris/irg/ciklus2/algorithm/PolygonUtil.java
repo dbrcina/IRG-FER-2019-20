@@ -35,6 +35,8 @@ public class PolygonUtil {
      * @param polyElems list of polygon elements.
      */
     public static void calculateCoeffConvex(List<IPolyElem> polyElems) {
+        boolean[] convexOrientation = new boolean[2];
+        PolygonUtil.checkIfConvex(polyElems, convexOrientation);
         int n = polyElems.size();
         int i0 = n - 1;
         for (int i = 0; i < n; i0 = i++) {
@@ -45,7 +47,8 @@ public class PolygonUtil {
             int b = -(start.getX() - end.getX());
             int c = start.getX() * end.getY() - start.getY() * end.getX();
             element.setEdge(new IEdge2D(a, b, c));
-            element.setEdgeLeft(start.getY() < end.getY());
+            if (convexOrientation[1]) element.setEdgeLeft(start.getY() < end.getY());
+            else element.setEdgeLeft(start.getY() >= end.getY());
         }
     }
 
@@ -119,11 +122,16 @@ public class PolygonUtil {
      */
     public static void checkIfConvex(List<IPolyElem> polyElems, boolean[] results) {
         int n = polyElems.size();
+        if (n < 2) {
+            results[0] = true;
+            return;
+        }
         int above = 0, under = 0, on = 0;
         int i0 = n - 2;
         for (int i = 0; i < n; i++, i0++) {
             if (i0 >= n) i0 = 0;
             IEdge2D i0edge = polyElems.get(i0).getEdge();
+            if (i0edge == null) continue;
             IPoint2D ipoint = polyElems.get(i).getPoint();
             int r = i0edge.getA() * ipoint.getX() + i0edge.getB() * ipoint.getY() + i0edge.getC();
             if (r == 0) on++;

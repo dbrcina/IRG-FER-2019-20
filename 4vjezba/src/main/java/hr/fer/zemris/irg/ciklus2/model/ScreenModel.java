@@ -2,6 +2,7 @@ package hr.fer.zemris.irg.ciklus2.model;
 
 import hr.fer.zemris.irg.ciklus2.algorithm.PolygonUtil;
 import hr.fer.zemris.irg.ciklus2.listener.ScreenModelListener;
+import hr.fer.zemris.irg.ciklus2.structure.IEdge2D;
 import hr.fer.zemris.irg.ciklus2.structure.IPoint2D;
 import hr.fer.zemris.irg.ciklus2.structure.IPolyElem;
 
@@ -61,7 +62,13 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
                 break;
             default:  // do nothing
         }
-        if (update) notifyListeners(ScreenModelListener::modelUpdated);
+        if (update) {
+            if (code == KeyEvent.VK_N || code == KeyEvent.VK_ESCAPE) {
+                notifyListeners(ScreenModelListener::modelUpdated);
+            } else {
+                addNewPolyElement(currentPoint, false);
+            }
+        }
     }
 
     private boolean handleStopKey() {
@@ -111,6 +118,7 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
     }
 
     private void addNewPolyElement(IPoint2D point, boolean mouseClicked) {
+        if (point == null) return;
         IPolyElem element = new IPolyElem();
         element.setPoint(point);
         polyElems.add(element);
@@ -120,10 +128,12 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
             PolygonUtil.checkIfConvex(polyElems, convexOrientation);
             if (!convexOrientation[0]) {
                 System.out.println("Točka " + point + " se ne prihvaća jer narušava konveksnost");
+                polyElems.remove(polyElems.size() - 1);
                 return;
             }
         }
         notifyListeners(ScreenModelListener::modelUpdated);
+        if (!mouseClicked) polyElems.remove(polyElems.size() - 1);
     }
 
     @Override
@@ -133,14 +143,29 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
             numberOfClicks++;
             addNewPolyElement(new IPoint2D(e.getX(), e.getY()), true);
         } else {
-
+            IPoint2D p = new IPoint2D(e.getX(), e.getY());
+            if (polyElems.size() < 2) {
+                System.out.println("Točka " + p + " se nalazi izvan poligona");
+                return;
+            }
+            int above = 0, under = 0;
+            for (IPolyElem polyElem : polyElems) {
+                IEdge2D edge = polyElem.getEdge();
+                int r = edge.getA() * p.getX() + edge.getB() * p.getY() + edge.getC();
+                if (r == 0) {
+                    System.out.println("Točka " + p + " se nalazi na poligonu");
+                    return;
+                } else if (r > 0) above++;
+                else under++;
+            }
+            if (above == 0 || under == 0) System.out.println("Točka " + p + " se nalazi u poligonu");
+            else System.out.println("Točka " + p + " se nalazi izvan poligona");
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!stateDrawPolygon || numberOfClicks == 0) return;
-        if (currentPoint != null) polyElems.remove(polyElems.size() - 1);
         currentPoint = new IPoint2D(e.getX(), e.getY());
         addNewPolyElement(currentPoint, false);
     }

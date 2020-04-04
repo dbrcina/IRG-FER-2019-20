@@ -47,7 +47,7 @@ public class IPolyElem {
         IPolyElem iPolyElem = (IPolyElem) o;
         return isEdgeLeft == iPolyElem.isEdgeLeft &&
                 Objects.equals(point, iPolyElem.point) &&
-                edge.equals(iPolyElem.edge);
+                Objects.equals(edge, iPolyElem.edge);
     }
 
     @Override
