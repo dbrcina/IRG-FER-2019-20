@@ -55,7 +55,7 @@ public class Zad4 extends JFrame implements ScreenModelListener {
     private void initGUI() {
         setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
-        setTitle("Zad3 - Polygons");
+        setTitle("Zad4 - Polygons");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         info.setHorizontalAlignment(SwingConstants.RIGHT);
         info.setBackground(Color.WHITE);

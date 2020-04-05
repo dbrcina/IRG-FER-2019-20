@@ -63,11 +63,12 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
             default:  // do nothing
         }
         if (update) {
-            if (code == KeyEvent.VK_N || code == KeyEvent.VK_ESCAPE) {
-                notifyListeners(ScreenModelListener::modelUpdated);
-            } else {
-                addNewPolyElement(currentPoint, false);
+            if (convex && (code == KeyEvent.VK_N || code == KeyEvent.VK_ESCAPE)) {
+                boolean[] convexOrientation = new boolean[2];
+                PolygonUtil.checkIfConvex(polyElems, convexOrientation);
+                if (!convexOrientation[0]) polyElems.remove(polyElems.size() - 1);
             }
+            listeners.forEach(ScreenModelListener::modelUpdated);
         }
     }
 
@@ -118,22 +119,24 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
     }
 
     private void addNewPolyElement(IPoint2D point, boolean mouseClicked) {
-        if (point == null) return;
+        if (point == null) {
+            notifyListeners(ScreenModelListener::modelUpdated);
+            return;
+        }
         IPolyElem element = new IPolyElem();
         element.setPoint(point);
         polyElems.add(element);
         PolygonUtil.calculateCoeffConvex(polyElems);
-        if (mouseClicked && convex && polyElems.size() > 1) {
+        if (mouseClicked && convex && polyElems.size() > 2) {
+            polyElems.remove(polyElems.size() - 1);
             boolean[] convexOrientation = new boolean[2];
             PolygonUtil.checkIfConvex(polyElems, convexOrientation);
             if (!convexOrientation[0]) {
                 System.out.println("Točka " + point + " se ne prihvaća jer narušava konveksnost");
-                polyElems.remove(polyElems.size() - 1);
                 return;
-            }
+            } else polyElems.add(element);
         }
         notifyListeners(ScreenModelListener::modelUpdated);
-        if (!mouseClicked) polyElems.remove(polyElems.size() - 1);
     }
 
     @Override
@@ -143,6 +146,7 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
             numberOfClicks++;
             addNewPolyElement(new IPoint2D(e.getX(), e.getY()), true);
         } else {
+            if (polyElems.isEmpty()) return;
             IPoint2D p = new IPoint2D(e.getX(), e.getY());
             if (polyElems.size() < 2) {
                 System.out.println("Točka " + p + " se nalazi izvan poligona");
@@ -166,6 +170,7 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!stateDrawPolygon || numberOfClicks == 0) return;
+        if (currentPoint != null) polyElems.remove(polyElems.size() - 1);
         currentPoint = new IPoint2D(e.getX(), e.getY());
         addNewPolyElement(currentPoint, false);
     }

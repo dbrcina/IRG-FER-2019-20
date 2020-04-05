@@ -25,7 +25,7 @@ public class PolygonUtil {
         for (int i = 0; i < n; i0 = i++) {
             IPoint2D start = polyElems.get(i0).getPoint();
             IPoint2D end = polyElems.get(i).getPoint();
-            LineDrawingAlg.bresenhamDrawLineI(gl2, new ILine2D(start, end));
+            new ILine2D(start, end).draw(gl2, true);
         }
     }
 
@@ -106,7 +106,7 @@ public class PolygonUtil {
             }
             IPoint2D start = new IPoint2D((int) Math.round(L), y);
             IPoint2D end = new IPoint2D((int) Math.round(R), y);
-            LineDrawingAlg.bresenhamDrawLineI(gl2, new ILine2D(start, end));
+            new ILine2D(start, end).draw(gl2, true);
         }
     }
 
