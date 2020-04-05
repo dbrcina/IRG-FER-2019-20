@@ -63,10 +63,12 @@ public class ScreenModel implements MouseListener, MouseMotionListener, KeyListe
             default:  // do nothing
         }
         if (update) {
-            if (convex && (code == KeyEvent.VK_N || code == KeyEvent.VK_ESCAPE)) {
-                boolean[] convexOrientation = new boolean[2];
-                PolygonUtil.checkIfConvex(polyElems, convexOrientation);
-                if (!convexOrientation[0]) polyElems.remove(polyElems.size() - 1);
+            if (convex) {
+                if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_N && !stopAddingPoints) {
+                    boolean[] convexOrientation = new boolean[2];
+                    PolygonUtil.checkIfConvex(polyElems, convexOrientation);
+                    if (!convexOrientation[0]) polyElems.remove(polyElems.size() - 1);
+                }
             }
             listeners.forEach(ScreenModelListener::modelUpdated);
         }
