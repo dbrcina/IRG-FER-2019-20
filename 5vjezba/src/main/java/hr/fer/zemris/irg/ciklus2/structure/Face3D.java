@@ -26,7 +26,7 @@ public class Face3D {
         return planeCoeff;
     }
 
-    public void setPlaneCoeff(double[] planeCoeff) {
+    public void setPlaneCoeff(double ...planeCoeff) {
         if (planeCoeff.length != 4) {
             throw new IllegalArgumentException("Face3D plane expects four coefficients");
         }

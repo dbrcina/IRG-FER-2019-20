@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class Zad5 {
@@ -35,8 +35,7 @@ public class Zad5 {
         System.out.println("Pregled naredbi:");
         System.out.println("(1)quit - izlazak iz programa,");
         System.out.println("(2)normiraj - normiraj koordinate tijela i ispiši rezultat,");
-        System.out.println("(3)nacrtaj - crtanje objekata");
-        System.out.println("(4)unos bilo koje 3D točke formata x y z.");
+        System.out.println("(3)unos bilo koje 3D točke formata x y z.");
         try (Scanner sc = new Scanner(System.in)) {
             while (true) {
                 System.out.print("> ");
@@ -55,6 +54,7 @@ public class Zad5 {
                     double[] coordinates = Arrays.stream(line.split("\\s+"))
                             .mapToDouble(Double::parseDouble)
                             .toArray();
+                    if (coordinates.length != 3) throw new RuntimeException();
                     Vertex3D v = new Vertex3D(coordinates[0], coordinates[1], coordinates[2]);
                     model.checkPointPosition(v);
                 } catch (Exception e) {
@@ -64,15 +64,17 @@ public class Zad5 {
         }
     }
 
+    // fills model with data from .obj file
     private static ObjectModel readFromOBJ(Path file) {
         ObjectModel model;
         try (BufferedReader br = Files.newBufferedReader(file)) {
-            List<Vertex3D> vertices = new ArrayList<>();
-            List<Face3D> faces = new ArrayList<>();
+            Collection<Vertex3D> vertices = new ArrayList<>();
+            Collection<Face3D> faces = new ArrayList<>();
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.matches("^[#g]].*$")) continue;
-                String[] parts = line.trim().split("\\s+");
+                line = line.trim();
+                if (line.isEmpty() || line.matches("^[^vf].*")) continue;
+                String[] parts = line.split("\\s+");
                 if (parts[0].equals("v")) {
                     Vertex3D v = new Vertex3D(Double.parseDouble(parts[1]),
                             Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
@@ -87,6 +89,7 @@ public class Zad5 {
             return model;
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
         return null;
     }

@@ -23,13 +23,6 @@ public class Vertex3D {
         return copy().sub(other);
     }
 
-    public Vertex3D translate(Vertex3D delta) {
-        x -= delta.x;
-        y -= delta.y;
-        z -= delta.z;
-        return this;
-    }
-
     public Vertex3D scale(double alpha) {
         x *= alpha;
         y *= alpha;

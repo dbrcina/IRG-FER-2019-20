@@ -18,15 +18,15 @@ public class ObjectModel {
     }
 
     private void calculateFacePlanes() {
-        for (Face3D f : faces) {
-            Vertex3D[] fVertices = findVerticesForFace(f);
+        for (Face3D face : faces) {
+            Vertex3D[] fVertices = findVerticesForFace(face);
             Vertex3D v1 = fVertices[1].nSub(fVertices[0]);
             Vertex3D v2 = fVertices[2].nSub(fVertices[0]);
             double a = A.apply(v1, v2);
             double b = B.apply(v1, v2);
             double c = C.apply(v1, v2);
             double d = D.apply(new double[]{a, b, c}, fVertices[0]);
-            f.setPlaneCoeff(new double[]{a, b, c, d});
+            face.setPlaneCoeff(a, b, c, d);
         }
     }
 
@@ -42,8 +42,8 @@ public class ObjectModel {
 
     public void checkPointPosition(Vertex3D point) {
         int on = 0;
-        for (Face3D f : faces) {
-            double[] planeCoeff = f.getPlaneCoeff();
+        for (Face3D face : faces) {
+            double[] planeCoeff = face.getPlaneCoeff();
             double r = planeCoeff[0] * point.getX() + planeCoeff[1] * point.getY()
                     + planeCoeff[2] * point.getZ() + planeCoeff[3];
             if (r > 0) {
@@ -69,7 +69,7 @@ public class ObjectModel {
         Vertex3D center = findObjectCenter(minsMaxs);
         double M = findMaxSpan(minsMaxs);
         double alpha = 2 / M;
-        for (Vertex3D v : vertices) v.translate(center).scale(alpha);
+        for (Vertex3D v : vertices) v.sub(center).scale(alpha);
         calculateFacePlanes();
     }
 
@@ -78,12 +78,13 @@ public class ObjectModel {
         Vertex3D v0 = vertices[0];
         double[] minsMaxs = {v0.getX(), v0.getX(), v0.getY(), v0.getY(), v0.getZ(), v0.getZ()};
         for (int i = 1; i < vertices.length; i++) {
-            minsMaxs[0] = Math.min(minsMaxs[0], vertices[i].getX());
-            minsMaxs[1] = Math.max(minsMaxs[1], vertices[i].getX());
-            minsMaxs[2] = Math.min(minsMaxs[2], vertices[i].getY());
-            minsMaxs[3] = Math.max(minsMaxs[3], vertices[i].getY());
-            minsMaxs[4] = Math.min(minsMaxs[4], vertices[i].getZ());
-            minsMaxs[5] = Math.max(minsMaxs[5], vertices[i].getZ());
+            Vertex3D vi = vertices[i];
+            minsMaxs[0] = Math.min(minsMaxs[0], vi.getX());
+            minsMaxs[1] = Math.max(minsMaxs[1], vi.getX());
+            minsMaxs[2] = Math.min(minsMaxs[2], vi.getY());
+            minsMaxs[3] = Math.max(minsMaxs[3], vi.getY());
+            minsMaxs[4] = Math.min(minsMaxs[4], vi.getZ());
+            minsMaxs[5] = Math.max(minsMaxs[5], vi.getZ());
         }
         return minsMaxs;
     }
