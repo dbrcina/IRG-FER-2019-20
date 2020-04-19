@@ -72,7 +72,7 @@ public class PolygonUtil {
             if (ymin > p.getY()) ymin = p.getY();
             if (ymax < p.getY()) ymax = p.getY();
         }
-
+        calculateCoeffConvex(polyElems);
         // fill polygon from ymin to ymax...
         for (int y = ymin; y <= ymax; y++) {
             // find max left and right intersect
