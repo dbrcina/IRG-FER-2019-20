@@ -2,8 +2,10 @@ package hr.fer.zemris.irg.vjezba6;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.glu.GLU;
+import hr.fer.zemris.irg.linearna.IMatrix;
+import hr.fer.zemris.irg.linearna.IRG;
 import hr.fer.zemris.irg.linearna.IVector;
+import hr.fer.zemris.irg.linearna.Vector;
 import hr.fer.zemris.irg.vjezba6.model.Face3D;
 import hr.fer.zemris.irg.vjezba6.model.ObjectModel;
 import hr.fer.zemris.irg.vjezba6.model.Vertex3D;
@@ -15,7 +17,7 @@ import java.awt.event.KeyEvent;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Zad6_2_1 extends JFrame {
+public class Zad6_2_3 extends JFrame {
 
     static {
         GLProfile.initSingleton();
@@ -28,7 +30,7 @@ public class Zad6_2_1 extends JFrame {
     private final ObjectModel model;
     private final EyeController controller = new EyeController(3, 4, 1);
 
-    public Zad6_2_1(ObjectModel model) {
+    public Zad6_2_3(ObjectModel model) {
         this.model = model;
         initGUI();
         initGLEventListener();
@@ -53,20 +55,23 @@ public class Zad6_2_1 extends JFrame {
                 gl2.glMatrixMode(GL2.GL_MODELVIEW);
                 gl2.glLoadIdentity();
                 IVector eye = controller.eye();
-                GLU glu = GLU.createGLU(gl2);
-                glu.gluLookAt(eye.get(0), eye.get(1), eye.get(2), 0, 0, 0, 0, 1, 0);
+                IMatrix lookAtMatrix = IRG.lookAtMatrix(eye, new Vector(0, 0, 0), new Vector(0, 1, 0));
+                IMatrix frustum = IRG.buildFrustumMatrix(-0.5, 0.5, -0.5, 0.5, 1, 100);
 
-                renderScene(gl2);
+                renderScene(gl2, lookAtMatrix.nMultiply(frustum));
             }
 
-            private void renderScene(GL2 gl2) {
-                Face3D[] faces = model.getFaces();
+            private void renderScene(GL2 gl2, IMatrix transformMatrix) {
                 gl2.glColor3f(1, 0, 0);
+                Face3D[] faces = model.getFaces();
                 for (Face3D face : faces) {
                     Vertex3D[] vertices = model.findVerticesForFace(face);
                     gl2.glBegin(GL.GL_LINE_LOOP);
                     for (Vertex3D vertex : vertices) {
-                        gl2.glVertex3d(vertex.getX(), vertex.getY(), vertex.getZ());
+                        IVector v = new Vector(vertex.getX(), vertex.getY(), vertex.getZ(), 1);
+                        IVector tv = v.toRowMatrix(false).nMultiply(transformMatrix).toVector(false)
+                                .nFromHomogeneous();
+                        gl2.glVertex2d(tv.get(0), tv.get(1));
                     }
                     gl2.glEnd();
                 }
@@ -79,7 +84,6 @@ public class Zad6_2_1 extends JFrame {
 
                 gl2.glMatrixMode(GL2.GL_PROJECTION);
                 gl2.glLoadIdentity();
-                gl2.glFrustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
 
                 gl2.glViewport(0, 0, width, height);
             }
@@ -107,7 +111,7 @@ public class Zad6_2_1 extends JFrame {
     private void initGUI() {
         setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
-        setTitle("Vježba 6 - Zad 6.2.1");
+        setTitle("Vježba 6 - Zad 6.2.3");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().add(canvas, BorderLayout.CENTER);
         setVisible(true);
@@ -125,7 +129,7 @@ public class Zad6_2_1 extends JFrame {
         }
         Path file = Paths.get(args[0]);
         ObjectModel model = ObjectModel.readFromOBJ(file).normalize();
-        SwingUtilities.invokeLater(() -> new Zad6_2_1(model));
+        SwingUtilities.invokeLater(() -> new Zad6_2_3(model));
     }
 
 }

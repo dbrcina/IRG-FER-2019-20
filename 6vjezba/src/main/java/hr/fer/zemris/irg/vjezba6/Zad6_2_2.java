@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Zad6_2_1 extends JFrame {
+public class Zad6_2_2 extends JFrame {
 
     static {
         GLProfile.initSingleton();
@@ -28,7 +28,7 @@ public class Zad6_2_1 extends JFrame {
     private final ObjectModel model;
     private final EyeController controller = new EyeController(3, 4, 1);
 
-    public Zad6_2_1(ObjectModel model) {
+    public Zad6_2_2(ObjectModel model) {
         this.model = model;
         initGUI();
         initGLEventListener();
@@ -79,7 +79,14 @@ public class Zad6_2_1 extends JFrame {
 
                 gl2.glMatrixMode(GL2.GL_PROJECTION);
                 gl2.glLoadIdentity();
-                gl2.glFrustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
+                GLU glu = GLU.createGLU(gl2);
+                float near = 1;
+                float far = 100;
+                float w = 1;
+                float h = 1;
+                float fovy = (float) (2 * Math.atan(h / (2 * near)));
+                float aspect = w / h;
+                glu.gluPerspective(Math.toDegrees(fovy), aspect, near, far);
 
                 gl2.glViewport(0, 0, width, height);
             }
@@ -107,7 +114,7 @@ public class Zad6_2_1 extends JFrame {
     private void initGUI() {
         setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
-        setTitle("Vježba 6 - Zad 6.2.1");
+        setTitle("Vježba 6 - Zad 6.2.2");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().add(canvas, BorderLayout.CENTER);
         setVisible(true);
@@ -125,7 +132,7 @@ public class Zad6_2_1 extends JFrame {
         }
         Path file = Paths.get(args[0]);
         ObjectModel model = ObjectModel.readFromOBJ(file).normalize();
-        SwingUtilities.invokeLater(() -> new Zad6_2_1(model));
+        SwingUtilities.invokeLater(() -> new Zad6_2_2(model));
     }
 
 }
