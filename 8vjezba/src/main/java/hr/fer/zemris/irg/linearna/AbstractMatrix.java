@@ -104,6 +104,9 @@ public abstract class AbstractMatrix implements IMatrix {
     }
 
     private IMatrix findAdJointMatrix() {
+        if (getRowsCount() == 1) {
+            return this;
+        }
         IMatrix result = newInstance(getRowsCount(), getColsCount());
         for (int i = 0; i < getRowsCount(); i++) {
             for (int j = 0; j < getColsCount(); j++) {

@@ -3,6 +3,8 @@ package hr.fer.zemris.irg.vjezba8;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
+import hr.fer.zemris.irg.linearna.IMatrix;
+import hr.fer.zemris.irg.linearna.Matrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Zad8 extends JFrame {
 
@@ -26,6 +30,7 @@ public class Zad8 extends JFrame {
     private final GLCanvas canvas = new GLCanvas(new GLCapabilities(GLProfile.getDefault()));
     private final List<Point> points = new ArrayList<>();
     private int indexOfClickedPoint = -1;
+    private final int divs = 100;
 
     public Zad8() {
         initGUI();
@@ -123,19 +128,6 @@ public class Zad8 extends JFrame {
                 renderScene(gl2);
             }
 
-            private void renderScene(GL2 gl2) {
-                drawControlLine(gl2);
-            }
-
-            private void drawControlLine(GL2 gl2) {
-                gl2.glColor3f(1, 0, 0);
-                gl2.glBegin(GL2.GL_LINE_STRIP);
-                for (Point point : points) {
-                    gl2.glVertex2d(point.getX(), point.getY());
-                }
-                gl2.glEnd();
-            }
-
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 GL2 gl2 = glAutoDrawable.getGL().getGL2();
 
@@ -145,6 +137,85 @@ public class Zad8 extends JFrame {
                 glu.gluOrtho2D(0, width, height, 0);
 
                 gl2.glViewport(0, 0, width, height);
+            }
+
+            private void renderScene(GL2 gl2) {
+                drawControlLine(gl2);
+                drawBezier(gl2, Color.BLUE, points);
+                List<Point> interpolatedPoints = interpolate();
+                drawBezier(gl2, Color.BLACK, interpolatedPoints);
+            }
+
+            private void drawControlLine(GL2 gl2) {
+                gl2.glColor3f(1, 0, 0);
+                gl2.glBegin(GL2.GL_LINE_STRIP);
+                for (Point point : points) {
+                    gl2.glVertex2d(point.x, point.y);
+                }
+                gl2.glEnd();
+            }
+
+            private void drawBezier(GL2 gl2, Color color, List<Point> points) {
+                int n = points.size() - 1;
+                int[] factors = computeFactors(n);
+                gl2.glColor3f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                gl2.glBegin(GL2.GL_LINE_STRIP);
+                for (int i = 0; i <= divs; i++) {
+                    double t = 1.0 / divs * i;
+                    Point p = new Point();
+                    for (int j = 0; j <= n; j++) {
+                        double b;
+                        if (j == 0) {
+                            b = factors[j] * Math.pow(1 - t, n);
+                        } else if (j == n) {
+                            b = factors[j] * Math.pow(t, n);
+                        } else {
+                            b = factors[j] * Math.pow(t, j) * Math.pow(1 - t, n - j);
+                        }
+                        p.x += b * points.get(j).x;
+                        p.y += b * points.get(j).y;
+                    }
+                    gl2.glVertex2f(p.x, p.y);
+                }
+                gl2.glEnd();
+            }
+
+            private int[] computeFactors(int n) {
+                int[] factors = new int[n + 1];
+                int a = 1;
+                for (int i = 1; i <= n + 1; i++) {
+                    factors[i - 1] = a;
+                    a = a * (n - i + 1) / i;
+                }
+                return factors;
+            }
+
+            private List<Point> interpolate() {
+                int n = points.size() - 1;
+                IMatrix P = new Matrix(n + 1, 2);
+                for (int i = 0; i < P.getRowsCount(); i++) {
+                    Point p = points.get(i);
+                    P.set(i, 0, p.x);
+                    P.set(i, 1, p.y);
+                }
+                IMatrix B = new Matrix(n + 1, n + 1);
+                int[] factors = computeFactors(n);
+                for (int i = 0; i < B.getRowsCount(); i++) {
+                    double t = 1.0 / n * i;
+                    for (int j = 0; j < B.getColsCount(); j++) {
+                        if (j == 0) {
+                            B.set(i, j, factors[j] * Math.pow(1 - t, n));
+                        } else if (j == n) {
+                            B.set(i, j, factors[j] * Math.pow(t, n));
+                        } else {
+                            B.set(i, j, factors[j] * Math.pow(t, j) * Math.pow(1 - t, n - j));
+                        }
+                    }
+                }
+                IMatrix R = B.nInvert().nMultiply(P);
+                return Arrays.stream(R.toArray())
+                        .map(ar -> new Point((int) ar[0], (int) ar[1]))
+                        .collect(Collectors.toList());
             }
         });
     }
