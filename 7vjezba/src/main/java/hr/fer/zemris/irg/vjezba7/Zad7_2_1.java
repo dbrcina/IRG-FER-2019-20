@@ -83,14 +83,15 @@ public class Zad7_2_1 extends JFrame {
 
                 gl2.glMatrixMode(GL2.GL_PROJECTION);
                 gl2.glLoadIdentity();
-                GLU glu = GLU.createGLU(gl2);
+                gl2.glFrustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
+                /*GLU glu = GLU.createGLU(gl2);
                 float near = 1;
                 float far = 100;
                 float w = 1;
                 float h = 1;
                 float fovy = (float) (2 * Math.atan(h / (2 * near)));
                 float aspect = w / h;
-                glu.gluPerspective(Math.toDegrees(fovy), aspect, near, far);
+                glu.gluPerspective(Math.toDegrees(fovy), aspect, near, far);*/
 
                 gl2.glViewport(0, 0, width, height);
             }
