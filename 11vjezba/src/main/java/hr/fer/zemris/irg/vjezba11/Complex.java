@@ -1,4 +1,4 @@
-package hr.fer.zemris.irg.vjezba11.math;
+package hr.fer.zemris.irg.vjezba11;
 
 import static java.lang.Math.*;
 

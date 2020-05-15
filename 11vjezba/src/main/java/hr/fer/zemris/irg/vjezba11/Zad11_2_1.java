@@ -3,7 +3,6 @@ package hr.fer.zemris.irg.vjezba11;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
-import hr.fer.zemris.irg.vjezba11.math.Complex;
 
 import javax.swing.*;
 import java.awt.*;
